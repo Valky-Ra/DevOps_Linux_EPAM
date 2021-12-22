@@ -57,8 +57,9 @@
 [4]+  Stopped                 sleep 100000
 ```
 4. Уничтожить один из процессов. (Любой)
+Используем команду kill без параметров (по умолчанию используется SIGTERM)
 ```bash
-[ValkyRa@centos ~]$ kill -SIGKILL 3535
+[ValkyRa@centos ~]$ kill 3535
 [2]   Убито              sleep 1000
 [ValkyRa@centos ~]$ jobs
 [3]-  Stopped                 sleep 10000
@@ -77,9 +78,9 @@
 ```
 6. Убить один процесс, используя PID и другой по job ID
 ```bash
-[ValkyRa@centos ~]$ kill -9 %3
+[ValkyRa@centos ~]$ kill %3
 [3]-  Убито              sleep 10000
-[ValkyRa@centos ~]$ kill -9 3549
+[ValkyRa@centos ~]$ kill 3549
 [4]+  Убито              sleep 100000
 [ValkyRa@centos ~]$ jobs
 ```
@@ -306,7 +307,7 @@ hello
 1. Запустить sleep команду, перенаправляя stdout и stderr в два разных файла (оба файла будут пустыми).
 
 ```
-[ValkyRa@centos ~]$ sleep 600 1>>sleep 2>>sleep_error &
+[ValkyRa@centos ~]$ sleep 600 1>sleep 2>sleep_error &
 [1] 3009
 ```
 2. Найти через lsof команду которая отображает какие файлы использует этот процесс, также найти с какого файла получает stdin.
