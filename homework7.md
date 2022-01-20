@@ -251,12 +251,27 @@ sudo chkconfig nginx off
 chkconfig --list
 ```
 
-5. Remove sysstat package installed in the first task.
+Либо есть другой вариант.
+```
+yum-config-manager --disable nginx
+```
+Тем самым мы отключим репозиторий через yum.
 
+Либо вариант третий:
+
+Заходим в конфиг nginx, что находится по пути, /etc/yum.repos.d/nginx.repo
+```
+[ValkyRa@centos yum.repos.d]$ sudo emacs nginx.repo
+```
+Находим ранее введённый конфиг для nginx, дабы мы могли его установить, и в конфиге изменяем "enabled=1" на 0. Сохраняем конфиг и закрываем, и после этого в repolist-е, nginx пропадёт, что будет говорить о том, что он отключён.
+
+5. Remove sysstat package installed in the first task.
+Удаляем сам файл с пакетом, что мы через wget подтягивали, для установки sysstat-а
 ```
 [ValkyRa@centos init.d]$ cd ~
 [ValkyRa@centos ~]$ rm -rf sysstat-10.1.5-19.el7.x86_64.rpm
 ```
+А затем удалим и сам sysstat командой: ``` sudo yum erase sysstat ```
 
 6. Install EPEL repository and get information about it.
 
@@ -470,7 +485,7 @@ drwxrwxrwt. 133 root root   16384 дек 23 22:31 tmp
 drwxr-xr-x.  13 root root     155 ноя 24 16:09 usr
 drwxr-xr-x.  21 root root    4096 ноя 24 16:36 var
 ```
-И получаем, что при создании директории, создаются hard-ссылка, и поскольку директорий в корне 18, то и hard-ссылок также 18.
+И получаем, что при создании директории, создаются hard-ссылка, и поскольку директорий в корне 18, то и hard-ссылок будет 18, также стоит учитывать, что переходы "." и ".." тоже считаются директориями.
 
 3. Check what inode numbers have "/" and "/boot" directory. Why?
  
