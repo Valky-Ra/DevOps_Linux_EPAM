@@ -161,8 +161,8 @@ success
 ```
 После же, для нужного IP-адреса
 ```
-[valkyra@ValkyRa ~]$ sudo firewall-cmd --add-source=192.168.56.1/24 --permanent
-Success
+[valkyra@ValkyRa ~]$ sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule family=ipv4 source address=192.168.56.1/24 port port=22 protocol=tcp accept'
+success
 ```
 Перезапускаем фаерволл и его изменённые конфиги
 [valkyra@ValkyRa ~]$ firewall-cmd –reload
@@ -186,7 +186,9 @@ public (active)
   forward-ports: 
   source-ports: 
   icmp-blocks: 
-  rich rules:
+  rich rules: 
+	rule family="ipv4" source address="192.168.56.1/24" port port="22" protocol="tcp" accept
+
 ```
 
 
@@ -229,6 +231,20 @@ target     prot opt source               destination
 ```
 [valkyra@ValkyRa ~]$ sudo iptables -A INPUT -i enp0s3 -p tcp --dport 22 -s 192.168.56.1/24 -j ACCEPT
 ```
-И после, используем снова список iptables и видим успешный результат
+И изменим ACCEPT на DROP, для того, чтобы блокировались пакеты, попадающие не на конкретный IP
+```
+[valkyra@ValkyRa ~]$ sudo iptables -P INPUT DROP
+```
+И видим результат:
+```
+[valkyra@ValkyRa ~]$ sudo iptables --list
+Chain INPUT (policy DROP)
+target     prot opt source               destination         
+ACCEPT     tcp  --  192.168.56.0/24      anywhere             tcp dpt:ssh
 
-![image](https://user-images.githubusercontent.com/15772109/151134758-04d3c473-ca94-4195-868d-53fb77bbee83.png)
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination       
+```
